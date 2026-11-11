@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block conteudo %}
+<h2>Painel</h2>
+<div class="grid">
+<div class="card"><div>Produtos cadastrados</div><div class="numero">{{ resumo.total_produtos }}</div></div>
+<div class="card"><div>Valor total em estoque</div><div class="numero">R$ {{ resumo.valor_estoque|brl }}</div></div>
+</div>
+<div class="card"><h3>⚠️ Estoque baixo</h3>
+{% if baixo %}<table><tr><th>Produto</th><th>Quantidade</th><th>Mínimo</th></tr>
+{% for p in baixo %}<tr><td>{{ p.nome }}</td><td class="baixo">{{ p.quantidade }}</td><td>{{ p.estoque_minimo }}</td></tr>{% endfor %}</table>
+{% else %}<p>Nenhum produto com estoque baixo.</p>{% endif %}</div>
+{% endblock %}

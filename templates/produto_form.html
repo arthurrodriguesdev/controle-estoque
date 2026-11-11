@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block conteudo %}
+<div class="card"><h2>{{ 'Editar' if produto else 'Novo' }} produto</h2>
+<form method="post">
+<label>Nome</label><input name="nome" required value="{{ produto.nome if produto else request.form.nome }}">
+<label>Categoria</label><input name="categoria" required value="{{ produto.categoria if produto else request.form.categoria }}">
+<label>Preço (R$)</label><input name="preco" required value="{{ (produto.preco|brl) if produto else request.form.preco }}">
+<label>Quantidade</label><input name="quantidade" type="number" min="0" required value="{{ produto.quantidade if produto else (request.form.quantidade or 0) }}">
+<label>Estoque mínimo</label><input name="minimo" type="number" min="0" required value="{{ produto.estoque_minimo if produto else (request.form.minimo or 5) }}">
+<button>Salvar</button> <a class="btn btn-cinza" href="{{ url_for('produtos') }}">Cancelar</a>
+</form></div>{% endblock %}

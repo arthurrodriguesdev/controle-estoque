@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Controle de Estoque</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body>
+{% if session.usuario_id %}
+<nav><strong style="color:#fff">📦 Controle de Estoque</strong>
+<a href="{{ url_for('painel') }}">Painel</a>
+<a href="{{ url_for('produtos') }}">Produtos</a>
+<a href="{{ url_for('movimentacoes') }}">Movimentações</a>
+<a class="sair" href="{{ url_for('logout') }}">Sair ({{ session.usuario_nome }})</a></nav>
+{% endif %}
+<main>
+{% with msgs = get_flashed_messages(with_categories=true) %}
+  {% for cat, m in msgs %}<div class="msg {{ cat }}">{{ m }}</div>{% endfor %}
+{% endwith %}
+{% block conteudo %}{% endblock %}
+</main></body></html>

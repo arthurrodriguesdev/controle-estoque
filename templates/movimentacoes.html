@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block conteudo %}
+<div class="card"><h2>Registrar movimentação</h2>
+<form method="post">
+<label>Produto</label><select name="produto_id" required>
+{% for p in produtos %}<option value="{{ p.id }}">{{ p.nome }} (estoque: {{ p.quantidade }})</option>{% endfor %}</select>
+<label>Tipo</label><select name="tipo"><option value="ENTRADA">Entrada</option><option value="SAIDA">Saída</option></select>
+<label>Quantidade</label><input name="quantidade" type="number" min="1" required>
+<button>Registrar</button></form></div>
+<div class="card"><h3>Histórico (últimas 100)</h3>
+<table><tr><th>Data</th><th>Produto</th><th>Tipo</th><th>Qtd</th><th>Usuário</th></tr>
+{% for m in historico %}<tr><td>{{ m.data_hora }}</td><td>{{ m.produto }}</td><td>{{ m.tipo }}</td><td>{{ m.quantidade }}</td><td>{{ m.usuario }}</td></tr>
+{% else %}<tr><td colspan="5">Sem movimentações.</td></tr>{% endfor %}</table></div>
+{% endblock %}

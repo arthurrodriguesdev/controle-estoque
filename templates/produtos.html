@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block conteudo %}
+<div class="card"><h2>Produtos</h2>
+<form method="get" style="display:flex;gap:8px"><input name="busca" placeholder="Buscar por nome ou categoria" value="{{ busca }}">
+<button>Buscar</button><a class="btn" href="{{ url_for('novo_produto') }}" style="white-space:nowrap;align-self:center">+ Novo</a></form>
+<table><tr><th>Nome</th><th>Categoria</th><th>Preço</th><th>Qtd</th><th>Ações</th></tr>
+{% for p in produtos %}<tr><td>{{ p.nome }}</td><td>{{ p.categoria }}</td><td>R$ {{ p.preco|brl }}</td>
+<td class="{{ 'baixo' if p.quantidade <= p.estoque_minimo }}">{{ p.quantidade }}</td>
+<td><a class="btn btn-cinza" href="{{ url_for('editar_produto', pid=p.id) }}">Editar</a>
+<form class="inline" method="post" action="{{ url_for('excluir_produto', pid=p.id) }}" onsubmit="return confirm('Excluir este produto?')">
+<button class="btn-perigo">Excluir</button></form></td></tr>
+{% else %}<tr><td colspan="5">Nenhum produto encontrado.</td></tr>{% endfor %}</table></div>
+{% endblock %}
