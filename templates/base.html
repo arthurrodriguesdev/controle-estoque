@@ -12,7 +12,7 @@
 {% endif %}
 <main>
 {% with msgs = get_flashed_messages(with_categories=true) %}
-  {% for cat, m in msgs %}<div class="msg {{ cat }}">{{ m }}</div>{% endfor %}
+  {% for cat, m in msgs %}<div class="msg {{ cat }}" role="alert">{{ m }}</div>{% endfor %}
 {% endwith %}
 {% block conteudo %}{% endblock %}
 </main></body></html>

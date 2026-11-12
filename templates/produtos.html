@@ -1,12 +1,31 @@
 {% extends "base.html" %}{% block conteudo %}
-<div class="card"><h2>Produtos</h2>
-<form method="get" style="display:flex;gap:8px"><input name="busca" placeholder="Buscar por nome ou categoria" value="{{ busca }}">
-<button>Buscar</button><a class="btn" href="{{ url_for('novo_produto') }}" style="white-space:nowrap;align-self:center">+ Novo</a></form>
-<table><tr><th>Nome</th><th>Categoria</th><th>Preço</th><th>Qtd</th><th>Ações</th></tr>
-{% for p in produtos %}<tr><td>{{ p.nome }}</td><td>{{ p.categoria }}</td><td>R$ {{ p.preco|brl }}</td>
-<td class="{{ 'baixo' if p.quantidade <= p.estoque_minimo }}">{{ p.quantidade }}</td>
+<div class="card">
+<div class="acoes-topo"><h2 style="margin:0">Produtos</h2>
+<div><a class="btn btn-verde" href="{{ url_for('relatorio') }}">⬇ Relatório (CSV)</a>
+<a class="btn" href="{{ url_for('novo_produto') }}">+ Novo produto</a></div></div>
+<form method="get" class="filtros">
+<div><label for="busca">Buscar</label><input id="busca" name="busca" placeholder="Nome, categoria ou código" value="{{ busca }}"></div>
+<div><label for="categoria">Categoria</label><select id="categoria" name="categoria">
+<option value="">Todas</option>
+{% for c in categorias %}<option value="{{ c }}" {{ 'selected' if c == categoria }}>{{ c }}</option>{% endfor %}</select></div>
+<div><label for="ordem">Ordenar por</label><select id="ordem" name="ordem">
+{% for v, t in [('nome','Nome (A-Z)'),('qtd_asc','Menor quantidade'),('qtd_desc','Maior quantidade'),('preco','Maior preço')] %}
+<option value="{{ v }}" {{ 'selected' if v == ordem }}>{{ t }}</option>{% endfor %}</select></div>
+<div><button>Filtrar</button> {% if busca or categoria or ordem != 'nome' %}<a class="btn btn-cinza" href="{{ url_for('produtos') }}">Limpar</a>{% endif %}</div>
+</form>
+<br>
+<table><tr><th>Código</th><th>Nome</th><th>Categoria</th><th class="num">Preço</th><th class="num">Qtd</th><th>Situação</th><th>Ações</th></tr>
+{% for p in produtos %}{% set s = situacao(p) %}<tr>
+<td>{{ p.codigo or '—' }}</td><td>{{ p.nome }}</td><td>{{ p.categoria }}</td><td class="num">R$ {{ p.preco|brl }}</td>
+<td class="num {{ 'baixo' if s in ('baixo','zerado') }}">{{ p.quantidade }}</td>
+<td><span class="tag tag-{{ s }}">{{ {'ok':'OK','atencao':'Atenção','baixo':'Estoque baixo','zerado':'Zerado'}[s] }}</span></td>
 <td><a class="btn btn-cinza" href="{{ url_for('editar_produto', pid=p.id) }}">Editar</a>
-<form class="inline" method="post" action="{{ url_for('excluir_produto', pid=p.id) }}" onsubmit="return confirm('Excluir este produto?')">
+<form class="inline" method="post" action="{{ url_for('excluir_produto', pid=p.id) }}" onsubmit="return confirm('Excluir {{ p.nome }}? O histórico será mantido.')">
 <button class="btn-perigo">Excluir</button></form></td></tr>
-{% else %}<tr><td colspan="5">Nenhum produto encontrado.</td></tr>{% endfor %}</table></div>
+{% else %}<tr><td colspan="7" class="vazio">Nenhum produto encontrado.</td></tr>{% endfor %}</table>
+<p class="legenda"><span class="tag tag-ok">OK</span> estoque normal &nbsp;
+<span class="tag tag-atencao">Atenção</span> próximo do mínimo &nbsp;
+<span class="tag tag-baixo">Estoque baixo</span> no mínimo ou abaixo &nbsp;
+<span class="tag tag-zerado">Zerado</span> sem unidades</p>
+</div>
 {% endblock %}

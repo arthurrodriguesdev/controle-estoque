@@ -1,13 +1,20 @@
 {% extends "base.html" %}{% block conteudo %}
 <div class="card"><h2>Registrar movimentação</h2>
+{% if produtos %}
 <form method="post">
-<label>Produto</label><select name="produto_id" required>
+<label for="produto_id">Produto</label><select id="produto_id" name="produto_id" required>
 {% for p in produtos %}<option value="{{ p.id }}">{{ p.nome }} (estoque: {{ p.quantidade }})</option>{% endfor %}</select>
-<label>Tipo</label><select name="tipo"><option value="ENTRADA">Entrada</option><option value="SAIDA">Saída</option></select>
-<label>Quantidade</label><input name="quantidade" type="number" min="1" required>
-<button>Registrar</button></form></div>
+<label for="tipo">Tipo</label><select id="tipo" name="tipo"><option value="ENTRADA">Entrada (reposição)</option><option value="SAIDA">Saída (venda/uso)</option></select>
+<label for="quantidade">Quantidade</label><input id="quantidade" name="quantidade" type="number" min="1" required>
+<button>Registrar</button></form>
+{% else %}
+<p class="vazio">Nenhum produto cadastrado ainda. <a href="{{ url_for('novo_produto') }}">Cadastre um produto</a> para registrar movimentações.</p>
+{% endif %}
+</div>
 <div class="card"><h3>Histórico (últimas 100)</h3>
-<table><tr><th>Data</th><th>Produto</th><th>Tipo</th><th>Qtd</th><th>Usuário</th></tr>
-{% for m in historico %}<tr><td>{{ m.data_hora }}</td><td>{{ m.produto }}</td><td>{{ m.tipo }}</td><td>{{ m.quantidade }}</td><td>{{ m.usuario }}</td></tr>
-{% else %}<tr><td colspan="5">Sem movimentações.</td></tr>{% endfor %}</table></div>
+<table><tr><th>Data</th><th>Produto</th><th>Tipo</th><th class="num">Qtd</th><th>Usuário</th></tr>
+{% for m in historico %}<tr><td>{{ m.data_hora }}</td><td>{{ m.produto }}{% if not m.produto_ativo %} <em>(excluído)</em>{% endif %}</td>
+<td><span class="tag {{ 'tag-ok' if m.tipo == 'ENTRADA' else 'tag-atencao' }}">{{ 'Entrada' if m.tipo == 'ENTRADA' else 'Saída' }}</span></td>
+<td class="num">{{ m.quantidade }}</td><td>{{ m.usuario }}</td></tr>
+{% else %}<tr><td colspan="5" class="vazio">Sem movimentações.</td></tr>{% endfor %}</table></div>
 {% endblock %}

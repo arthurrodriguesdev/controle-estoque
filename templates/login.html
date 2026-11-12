@@ -1,6 +1,9 @@
 {% extends "base.html" %}{% block conteudo %}
 <div class="card login"><h2>Entrar</h2>
 <form method="post">
-<label>Login</label><input name="login" required autofocus>
-<label>Senha</label><input name="senha" type="password" required>
+<label for="login">Usuário</label>
+<input id="login" name="login" required autofocus value="{{ login_digitado }}" class="{{ 'invalido' if erro }}">
+<label for="senha">Senha</label>
+<input id="senha" name="senha" type="password" required class="{{ 'invalido' if erro }}">
+<label class="mostrar"><input type="checkbox" onclick="document.getElementById('senha').type = this.checked ? 'text' : 'password'"> Mostrar senha</label>
 <button>Entrar</button></form></div>{% endblock %}
